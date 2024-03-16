@@ -71,85 +71,83 @@ public class AddCarPanel extends JPanel implements ActionListener
 		carComponents.clearTextFields();
 	}
 
-	private void saveButtonClicked()
-	{
-		String manufacturer = "";
-		String model = "";
-		String info = "";
-		double kilometers = 0;
-		int price = 0;
-		int year = 0;
-		boolean valid = false;
-		try
-		{
-			/* retrieve all the values from the text field, and convert them into an appropriate
-			format */
-			manufacturer = carComponents.getManufacturerText().trim();
-			model = carComponents.getModelText().trim();
-			info = carComponents.getInfoText().trim();
-			kilometers = Double.parseDouble(carComponents.getKmText().trim());
-			price = Integer.parseInt(carComponents.getPriceText().trim());
-			year = Integer.parseInt(carComponents.getYearText().trim());
+	private void saveButtonClicked() {
+        try {
+            String manufacturer = carComponents.getManufacturerText().trim();
+            String model = carComponents.getModelText().trim();
+            String info = carComponents.getInfoText().trim();
+            double kilometers = Double.parseDouble(carComponents.getKmText().trim());
+            int price = Integer.parseInt(carComponents.getPriceText().trim());
+            int year = Integer.parseInt(carComponents.getYearText().trim());
 
-			// begin validation process
-			if (validateString(manufacturer))
-			{
-				if (year >= 1000 && year <= 9999)
-				{
-					if (validateString(model))
-					{
-						if (validateKilometers(carComponents.getKmText().trim()))
-						{
-							valid = true;
-						}
-						else
-							JOptionPane.showMessageDialog(carSystem, "An error has occured due to incorrect \"Km Traveled\" text field data.\nThis text field must contain a number with one decimal place only.", "Invalid field", JOptionPane.ERROR_MESSAGE);
-					}
-					else
-						JOptionPane.showMessageDialog(carSystem, "An error has occured due to incorrect \"Model\" text field data.\nThis text field must contain any string of at least two non-spaced characters.", "Invalid field", JOptionPane.ERROR_MESSAGE);
-				}
-				else
-					JOptionPane.showMessageDialog(carSystem, "An error has occured due to incorrect \"Year\" text field data.\nThis text field must be in the form, YYYY. ie, 2007.", "Invalid field", JOptionPane.ERROR_MESSAGE);
-			}
-			else
-				JOptionPane.showMessageDialog(carSystem, "An error has occured due to incorrect \"Manufacturer\" text field data.\nThis text field must contain any string of at least two non-spaced characters.", "Invalid field", JOptionPane.ERROR_MESSAGE);
+            if (!isValidManufacturer(manufacturer) || !isValidModel(model) ||
+                !isValidYear(year) || !isValidKilometers(carComponents.getKmText().trim())) {
+                return;
+            }
 
-		}
-		/* NumberFormatException would usually be thrown if the text fields contain invalid data,
-		for example a price field containing letters.*/
-		catch (NumberFormatException exp)
-		{
-			JOptionPane.showMessageDialog(carSystem, "An unknown error has occured. Please ensure your fields meet the following requirements:\n" +
-			"The \"Year\" field must contain four numeric digits only\nThe \"Price\" field must contain a valid integer with no decimal places\nThe \"Km Traveled\" field must contain a number which can have a maximum of one decimal place", "Invalid field", JOptionPane.ERROR_MESSAGE);
-		}
+            Car myCar = new Car(manufacturer, model, info);
+            myCar.setKilometers(kilometers);
+            myCar.setPrice(price);
+            myCar.setYear(year);
 
-		if (valid)
-		{
-			// create a car object from validated data.
-			Car myCar = new Car(manufacturer, model, info);
-			myCar.setKilometers(kilometers);
-			myCar.setPrice(price);
-			myCar.setYear(year);
+            int result = carSystem.addNewCar(myCar);
+            handleAddCarResult(result);
+        } catch (NumberFormatException exp) {
+            JOptionPane.showMessageDialog(carSystem, "An unknown error has occurred. Please ensure your fields meet the following requirements:\n" +
+                    "The \"Year\" field must contain four numeric digits only\nThe \"Price\" field must contain a valid integer with no decimal places\nThe \"Km Traveled\" field must contain a number which can have a maximum of one decimal place", "Invalid field", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
-			// attempt to add the new car to the system.
-			int result = carSystem.addNewCar(myCar);
+    private void handleAddCarResult(int result) {
+        switch (result) {
+            case CarsCollection.NO_ERROR:
+                JOptionPane.showMessageDialog(carSystem, "Record added.", "Confirmation", JOptionPane.INFORMATION_MESSAGE);
+                resetButtonClicked();
+                carComponents.setFocusManufacturerTextField();
+                break;
+            case CarsCollection.CARS_MAXIMUM_REACHED:
+                JOptionPane.showMessageDialog(carSystem, "The maximum amount of cars for that manufacturer has been reached.\nUnfortunately you cannot add any further cars to this manufacturer", "Problem adding car", JOptionPane.WARNING_MESSAGE);
+                break;
+            case CarsCollection.MANUFACTURERS_MAXIMUM_REACHED:
+                JOptionPane.showMessageDialog(carSystem, "The maximum amount of manufacturers in the car system has been reached.\nUnfortunately you cannot add any further manufacturers to this system", "Problem adding car", JOptionPane.WARNING_MESSAGE);
+                break;
+            default:
+                // Handle unexpected error codes
+                JOptionPane.showMessageDialog(carSystem, "An unknown error has occurred.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
-			// if the car was added successfully
-			if (result == CarsCollection.NO_ERROR)
-			{
-				carSystem.setCarsUpdated();
-				JOptionPane.showMessageDialog(carSystem, "Record added.", "Confirmation", JOptionPane.INFORMATION_MESSAGE);
-				resetButtonClicked();
-				carComponents.setFocusManufacturerTextField();
-			}
-			// for that manufacturer, the limit has been reached
-			else if (result == CarsCollection.CARS_MAXIMUM_REACHED)
-				JOptionPane.showMessageDialog(carSystem, "The maximum amount of cars for that manufacturer has been reached.\nUnfortunately you cannot add any further cars to this manufacturer", "Problem adding car", JOptionPane.WARNING_MESSAGE);
-			// the car system has reached the maximum number of manufacturers allowed
-			else if (result == CarsCollection.MANUFACTURERS_MAXIMUM_REACHED)
-				JOptionPane.showMessageDialog(carSystem, "The maximum amount of manufacturers in the car system has been reached.\nUnfortunately you cannot add any further manufacturers to this system", "Problem adding car", JOptionPane.WARNING_MESSAGE);
-		}
-	}
+    private boolean isValidManufacturer(String manufacturer) {
+        if (!validateString(manufacturer)) {
+            JOptionPane.showMessageDialog(carSystem, "An error has occurred due to incorrect \"Manufacturer\" text field data.\nThis text field must contain any string of at least two non-spaced characters.", "Invalid field", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isValidModel(String model) {
+        if (!validateString(model)) {
+            JOptionPane.showMessageDialog(carSystem, "An error has occurred due to incorrect \"Model\" text field data.\nThis text field must contain any string of at least two non-spaced characters.", "Invalid field", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isValidYear(int year) {
+        if (year < 1000 || year > 9999) {
+            JOptionPane.showMessageDialog(carSystem, "An error has occurred due to incorrect \"Year\" text field data.\nThis text field must be in the form, YYYY. ie, 2007.", "Invalid field", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isValidKilometers(String kmText) {
+        if (!validateKilometers(kmText)) {
+            JOptionPane.showMessageDialog(carSystem, "An error has occurred due to incorrect \"Km Traveled\" text field data.\nThis text field must contain a number with one decimal place only.", "Invalid field", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
+    }
 
 	/**
 	 * checks the argument. It is valid if there is more than 2 non-spaced characters.
