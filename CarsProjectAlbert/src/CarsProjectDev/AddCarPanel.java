@@ -29,6 +29,9 @@ public class AddCarPanel extends JPanel implements ActionListener
 	private JPanel buttonPanel = new JPanel();
 	private CarDetailsComponents carComponents = new CarDetailsComponents();
 
+	// Constant for repeated literal
+    private static final String INVALID_FIELD_MESSAGE = "Invalid field";
+    
 	/**
 	 * @param carSys links to a CarSalesSystem object
 	 * @param dest where the components will be placed
@@ -94,7 +97,7 @@ public class AddCarPanel extends JPanel implements ActionListener
             handleAddCarResult(result);
         } catch (NumberFormatException exp) {
             JOptionPane.showMessageDialog(carSystem, "An unknown error has occurred. Please ensure your fields meet the following requirements:\n" +
-                    "The \"Year\" field must contain four numeric digits only\nThe \"Price\" field must contain a valid integer with no decimal places\nThe \"Km Traveled\" field must contain a number which can have a maximum of one decimal place", "Invalid field", JOptionPane.ERROR_MESSAGE);
+                    "The \"Year\" field must contain four numeric digits only\nThe \"Price\" field must contain a valid integer with no decimal places\nThe \"Km Traveled\" field must contain a number which can have a maximum of one decimal place", INVALID_FIELD_MESSAGE, JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -119,7 +122,7 @@ public class AddCarPanel extends JPanel implements ActionListener
 
     private boolean isValidManufacturer(String manufacturer) {
         if (!validateString(manufacturer)) {
-            JOptionPane.showMessageDialog(carSystem, "An error has occurred due to incorrect \"Manufacturer\" text field data.\nThis text field must contain any string of at least two non-spaced characters.", "Invalid field", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(carSystem, "An error has occurred due to incorrect \"Manufacturer\" text field data.\nThis text field must contain any string of at least two non-spaced characters.", INVALID_FIELD_MESSAGE, JOptionPane.ERROR_MESSAGE);
             return false;
         }
         return true;
@@ -127,7 +130,7 @@ public class AddCarPanel extends JPanel implements ActionListener
 
     private boolean isValidModel(String model) {
         if (!validateString(model)) {
-            JOptionPane.showMessageDialog(carSystem, "An error has occurred due to incorrect \"Model\" text field data.\nThis text field must contain any string of at least two non-spaced characters.", "Invalid field", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(carSystem, "An error has occurred due to incorrect \"Model\" text field data.\nThis text field must contain any string of at least two non-spaced characters.", INVALID_FIELD_MESSAGE, JOptionPane.ERROR_MESSAGE);
             return false;
         }
         return true;
@@ -135,7 +138,7 @@ public class AddCarPanel extends JPanel implements ActionListener
 
     private boolean isValidYear(int year) {
         if (year < 1000 || year > 9999) {
-            JOptionPane.showMessageDialog(carSystem, "An error has occurred due to incorrect \"Year\" text field data.\nThis text field must be in the form, YYYY. ie, 2007.", "Invalid field", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(carSystem, "An error has occurred due to incorrect \"Year\" text field data.\nThis text field must be in the form, YYYY. ie, 2007.", INVALID_FIELD_MESSAGE, JOptionPane.ERROR_MESSAGE);
             return false;
         }
         return true;
@@ -143,7 +146,7 @@ public class AddCarPanel extends JPanel implements ActionListener
 
     private boolean isValidKilometers(String kmText) {
         if (!validateKilometers(kmText)) {
-            JOptionPane.showMessageDialog(carSystem, "An error has occurred due to incorrect \"Km Traveled\" text field data.\nThis text field must contain a number with one decimal place only.", "Invalid field", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(carSystem, "An error has occurred due to incorrect \"Km Traveled\" text field data.\nThis text field must contain a number with one decimal place only.", INVALID_FIELD_MESSAGE, JOptionPane.ERROR_MESSAGE);
             return false;
         }
         return true;
