@@ -359,15 +359,16 @@ public class CarsCollection
 		Car[] car;
 		car = getAllCars();
 
-		for (int i = 0; i < car.length; i++)
-		{
-			price = car[i].getPrice();
-			distance = car[i].getKilometers();
+		for (int i = 0; i < car.length; i++) {
+	        price = car[i].getPrice();
+	        distance = car[i].getKilometers();
 
-			if (price >= minPrice && price <= maxPrice)
- 				if (distance >= minDistance && distance <= maxDistance)
-					result.add(car[i]);
-		}
+	        if (price >= minPrice && price <= maxPrice) {
+	            if (distance >= minDistance && distance <= maxDistance) { // Properly indented
+	                result.add(car[i]);
+	            }
+	        }
+	    }
 
 		return CarSalesSystem.vectorToCar(result);
 	}
