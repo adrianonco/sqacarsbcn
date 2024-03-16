@@ -26,9 +26,13 @@ import javax.swing.*;
  */
 public class AboutDialog extends JDialog implements ActionListener
 {
+	// Declaration of a static serialVersionUID field of long type 
+	private static final long serialVersionUID = 1L; 
+	
 	private JButton okButton = new JButton("OK");
 	private JPanel buttonPanel = new JPanel();
-	private WindowCloser closer = new WindowCloser();
+	// Marked as transient
+	private transient WindowCloser closer = new WindowCloser();
 
 	/**
 	 * @param parent a parent JFrame to place the dialog on top of
