@@ -80,7 +80,7 @@ public class CarSalesSystem extends JFrame implements ActionListener, ComponentL
 	private AboutDialog aboutDlg;
 	private boolean carsUpdated = false;
 	private Vector registeredListeners = new Vector();
-	private CarsCollection carCollection;
+	private transient CarsCollection carCollection;
 	private JPanel topPanel = new JPanel(new BorderLayout());
 	private JPanel titlePanel = new JPanel(new GridLayout(2, 1));
 	private JLabel statusLabel = new JLabel();
